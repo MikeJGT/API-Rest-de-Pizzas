@@ -47,10 +47,9 @@ final class PizzaFactory extends ModelFactory
     protected function getDefaults(): array
     {
         return [
-            // 'createdAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
-            'ingredients' => ["Ingredient1","Ingredient2"],
+            'ingredients' => ["Ingredient1", "Ingredient2"],
             'name' => self::faker()->text(),
-            'ovenTimeInSeconds'=>self::faker()->randomNumber(4),
+            'ovenTimeInSeconds' => self::faker()->randomNumber(4),
             'special' => self::faker()->boolean(),
         ];
     }

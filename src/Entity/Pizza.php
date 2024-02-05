@@ -20,42 +20,46 @@ use DateTimeImmutable;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: PizzaRepository::class)]
-#[ApiResource(
-    description: 'An Api with the best Pizzas.',
-    // The global pagination is configured for 20
-    // Change the pagination for this ApiResource in the next line.
-    paginationItemsPerPage: 5,
-    normalizationContext: ['groups' => ['read']],
-    denormalizationContext: ['groups' => ['write']],
-    operations: [
-        new Get(),
-        new GetCollection(
-            //Uncoment the next line for change the GetCollection endpoint.
-            // uriTemplate: "/pizzas/v2/collection"
-        ),
-        new Post(),
-        // Uncomment the next line to allow the PUT method, and change the tests. 
-        // new Put(),
-        new Patch(),
-        new Delete(),
-    ]
+#[
+    ApiResource(
+        description: 'An Api with the best Pizzas.',
+        // The global pagination is configured for 20
+        // Change the pagination for this ApiResource in the next line.
+        paginationItemsPerPage: 5,
+        normalizationContext: ['groups' => ['read']],
+        denormalizationContext: ['groups' => ['write']],
+        operations: [
+            new Get(),
+            new GetCollection(
+                //Uncoment the next line for change the GetCollection endpoint.
+                // uriTemplate: "/pizzas/v2/collection"
+            ),
+            new Post(),
+
+            // Uncomment the next line to allow the PUT method
+            // and change the tests. 
+            // new Put(),
+            new Patch(),
+            new Delete(),
+        ]
     ),
     ApiFilter(
         SearchFilter::class,
-        properties:[
+        properties: [
             'name' => SearchFilter::STRATEGY_PARTIAL
         ]
-    )]
+    )
+]
 class Pizza
 {
- 
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
     private ?int $id = null;
 
 
-   
+
     #[
         Assert\NotBlank,
         Assert\Length(max: 48),
@@ -63,15 +67,15 @@ class Pizza
     ]
     #[ORM\Column(type: Types::STRING)]
     private ?string $name = null;
- 
-    
+
+
     #[
         Assert\NotNull,
         Assert\Count(
-        min:1,
-        max: 20,
-        minMessage: 'You cannot specify less than 1 ingredients',
-        maxMessage: 'You cannot specify more than {{ limit }} ingredients',
+            min: 1,
+            max: 20,
+            minMessage: 'You cannot specify less than 1 ingredients',
+            maxMessage: 'You cannot specify more than {{ limit }} ingredients',
         ),
         Groups(['read', 'write'])
     ]
@@ -106,7 +110,7 @@ class Pizza
     #[ORM\Column(type: Types::BOOLEAN)]
     private bool $special;
 
-   
+
     public function __construct(bool $special)
     {
         $this->special =  $special;
@@ -151,7 +155,7 @@ class Pizza
     }
 
     public function setOvenTimeInSeconds(?int $ovenTimeInSeconds): static
-    {   
+    {
         $this->setUpdatedAt();
         $this->ovenTimeInSeconds = $ovenTimeInSeconds;
 
@@ -170,14 +174,13 @@ class Pizza
 
     private function setUpdatedAt(): static
     {
-        $formatTime='Y-m-d H:i:s';
+        $formatTime = 'Y-m-d H:i:s';
         $updatedTime = new DateTimeImmutable();
 
-        if($this->createdAt->format($formatTime) != $updatedTime->format($formatTime))
-        {
+        if ($this->createdAt->format($formatTime) != $updatedTime->format($formatTime)) {
             $this->updatedAt = $updatedTime;
         }
-    
+
         return $this;
     }
 
